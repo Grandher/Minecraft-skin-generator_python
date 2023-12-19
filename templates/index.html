@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Skin Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h1>Skin Generator</h1>
+    </header>
+    <div id="skinpreview"></div>
+    <button id="skininput" onclick="generateImage()">Generate Skin</button>
+    <div id="skinmap"></div>
+    <div class="flex">
+        <button onclick="downloadImage()">Download<img src="{{ url_for('static', filename='download.svg') }}"
+                alt=""></button>
+        <div class="button">Hat
+            <label class="toggler-wrapper style-1">
+                <input type="checkbox" id="toggleHelmet">
+                <div class="toggler-slider">
+                    <div class="toggler-knob"></div>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='Three.js') }}"></script>
+    <script>
+        function generateImage() {
+            fetch('/generate_image')
+                .then(response => response.json())
+                .then(data => {
+                    // Получаем base64-кодированное изображение
+                    const imgSrc = `data:image/png;base64,${data.image}`;
+
+                    document.getElementById('skinmap').innerHTML = `<img src="${imgSrc}">`;
+
+                    skin.src = imgSrc;
+
+                    var flexContainer = document.querySelector('.flex');
+                    flexContainer.style.display = 'flex';
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        function downloadImage() {
+            const skinMap = document.getElementById('skinmap');
+            const imgElement = skinMap.querySelector('img');
+
+            if (imgElement) {
+                const imgSrc = imgElement.src;
+
+                // Создаем временный элемент <a> для скачивания
+                const downloadLink = document.createElement('a');
+                downloadLink.href = imgSrc;
+                downloadLink.download = 'minecraft_skin.png';
+
+                // Добавляем элемент в DOM и вызываем его клик
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                // Удаляем временный элемент
+                document.body.removeChild(downloadLink);
+            } else {
+                console.error('No image available for download.');
+            }
+        }
+
+    </script>
+    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+
+</body>
+
+</html>
