@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify
-from generator import imageGenerator  # Импортируйте вашу функцию для генерации изображения
+from generator import imageGenerator
 import base64
 from io import BytesIO
 
@@ -22,4 +22,4 @@ def generate_image():
     return jsonify({'image': img_str})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
